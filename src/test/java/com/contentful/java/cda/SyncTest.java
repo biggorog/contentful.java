@@ -135,7 +135,7 @@ public class SyncTest extends BaseTest {
 
   @Test
   @Enqueue(
-      defaults = { },
+      defaults = {},
       value = {
           "links_invalid/space.json",
           "links_invalid/content_types.json",
@@ -148,8 +148,20 @@ public class SyncTest extends BaseTest {
 
   @Test(expected = UnsupportedOperationException.class)
   @Enqueue({"links_invalid/preview_space.json"})
-  public void syncingWithPreviewTokenThrows() throws Exception {
+  public void syncingWithPreviewTokenAndNotInitialThrows() throws Exception {
     client = createPreviewClient();
-    client.sync().fetch();
+    client.sync("sometoken").fetch();
+  }
+
+  @Test
+  @Enqueue({
+      "demo/sync_initial_p1.json",
+      "demo/sync_initial_p2.json",
+      "demo/space.json"})
+  public void syncingWithPreviewWorks() throws Exception {
+    client = createPreviewClient();
+    final SynchronizedSpace space = client.sync().fetch();
+
+    assertInitial(space);
   }
 }

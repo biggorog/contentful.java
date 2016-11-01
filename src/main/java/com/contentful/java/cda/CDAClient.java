@@ -170,15 +170,16 @@ public class CDAClient {
    *
    * @param synchronizedSpace space to sync.
    * @return query instance.
-   * @throws UnsupportedOperationException if tried to sync with a preview token
+   * @throws UnsupportedOperationException if tried to do a non initial sync with a preview token
    */
   public SyncQuery sync(SynchronizedSpace synchronizedSpace) {
     return sync(null, synchronizedSpace);
   }
 
   private SyncQuery sync(String syncToken, SynchronizedSpace synchronizedSpace) {
-    if (preview) {
-      throw new UnsupportedOperationException("Syncing using a preview token is not supported. Please use a production token.");
+    if (preview && syncToken != null) {
+      throw new UnsupportedOperationException("Syncing using a preview token is only for initial " +
+          "sync supported. Please use a production token, or only do a initial sync.");
     }
 
     SyncQuery.Builder builder = SyncQuery.builder().setClient(this);
